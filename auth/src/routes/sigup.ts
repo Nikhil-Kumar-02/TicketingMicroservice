@@ -19,12 +19,15 @@ router.post("/api/users/signup" ,
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
-      return res.status(400).send(errors.array());
+      //return res.status(400).send(errors.array());
+      throw new Error("Email and Password are Required");
     }
     
     const {email , password } = req.body;
 
     console.log("creating a user");
+    //for now let say our database is always down
+    throw new Error("Cannot reach the Database");
 
     return res.status(200).json({
       message : "user has been sucessfully created",
