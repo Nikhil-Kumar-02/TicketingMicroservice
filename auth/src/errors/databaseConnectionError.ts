@@ -1,4 +1,14 @@
-export class DatabaseConnectionError extends Error{
+interface CustomErrorStructure{
+  statusCode:number;
+  serializeErrors():{
+    message:string;
+    feild?:string;
+    type?:string;
+  }[];
+}
+
+
+export class DatabaseConnectionError extends Error implements CustomErrorStructure{
   statusCode = 500;
   reason = "Error connecting to database";
 

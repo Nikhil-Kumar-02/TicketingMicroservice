@@ -1,6 +1,15 @@
 import { ValidationError } from 'express-validator';
 
-export class RequestValidationError extends Error{
+interface CustomErrorStructure{
+  statusCode:number;
+  serializeErrors():{
+    message:string;
+    feild?:string;
+    type?:string;
+  }[];
+}
+
+export class RequestValidationError extends Error implements CustomErrorStructure{
   errors: ValidationError[];
   statusCode = 400;
 
@@ -17,12 +26,12 @@ export class RequestValidationError extends Error{
       if ('path' in entry) {
         console.log("path " , entry.path);
         return {
-          msg: entry.msg,
+          message: entry.msg,
           field: entry.path, 
         };
       } else {
         return {
-          msg: entry.msg,
+          message: entry.msg,
           type: entry.type,
         };
       }
