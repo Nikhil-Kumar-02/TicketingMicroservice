@@ -1,5 +1,7 @@
 import express,{Request,Response} from "express";
 import { body , validationResult} from 'express-validator';
+import { DatabaseConnectionError } from "../errors/databaseConnectionError";
+import { RequestValidationError } from "../errors/requestValidationError";
 
 const router = express.Router();
 
@@ -20,14 +22,16 @@ router.post("/api/users/signup" ,
 
     if(!errors.isEmpty()){
       //return res.status(400).send(errors.array());
-      throw new Error("Email and Password are Required");
+      // throw new Error("Email and Password are Required");
+      throw new RequestValidationError(errors.array());
     }
     
     const {email , password } = req.body;
 
     console.log("creating a user");
     //for now let say our database is always down
-    throw new Error("Cannot reach the Database");
+    // throw new Error("Cannot reach the Database");
+    throw new DatabaseConnectionError();
 
     return res.status(200).json({
       message : "user has been sucessfully created",
