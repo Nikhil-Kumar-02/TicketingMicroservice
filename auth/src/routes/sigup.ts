@@ -1,7 +1,8 @@
 import express,{Request,Response} from "express";
 import { body , validationResult} from 'express-validator';
-import { DatabaseConnectionError } from "../errors/databaseConnectionError";
 import { RequestValidationError } from "../errors/requestValidationError";
+import { User } from "../models/user";
+import { BadRequestError } from "../errors/badRequestError";
 
 const router = express.Router();
 
@@ -17,27 +18,31 @@ router.post("/api/users/signup" ,
     .withMessage('Password must be of length between 4 and 10')
   ] 
   , 
-  (req:Request,res:Response) => {
+  async (req:Request,res:Response) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
       //return res.status(400).send(errors.array());
       // throw new Error("Email and Password are Required");
+
+      console.log("error is " , errors.array());
+
       throw new RequestValidationError(errors.array());
     }
     
     const {email , password } = req.body;
 
-    console.log("creating a user");
-    //for now let say our database is always down
-    // throw new Error("Cannot reach the Database");
-    throw new DatabaseConnectionError();
+    const existingUser = await User.findOne({email});
 
-    return res.status(200).json({
-      message : "user has been sucessfully created",
-      data : req.body,
-    });
+    if(existingUser){
+      console.log("Email is already registered with us  ;");
+      throw new BadRequestError("This email is already registered");
+    }
 
+    const user = User.build({email , password});
+    await user.save();
+
+    return res.status(201).send(user);
   }
 )
 

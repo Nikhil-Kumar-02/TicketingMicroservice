@@ -1,4 +1,5 @@
 import express from "express";
+import 'express-async-errors';
 import {json} from "body-parser";
 import mongoose from "mongoose";
 
@@ -20,6 +21,7 @@ app.use(signUpRoute);
 app.all('*' , ()=>{
   throw new NotFoundError();
 })
+
 
 app.use(errorHandler);
 
