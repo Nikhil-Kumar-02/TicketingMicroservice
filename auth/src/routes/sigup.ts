@@ -1,9 +1,9 @@
 import express,{Request,Response} from "express";
-import { body , validationResult} from 'express-validator';
-import { RequestValidationError } from "../errors/requestValidationError";
+import { body } from 'express-validator';
 import { User } from "../models/user";
 import { BadRequestError } from "../errors/badRequestError";
 import jwt from 'jsonwebtoken';
+import { validateRequest } from "../middlewares/validate-request";
 
 const router = express.Router();
 
@@ -17,19 +17,10 @@ router.post("/api/users/signup" ,
     .trim()
     .isLength({min:4 , max:10})
     .withMessage('Password must be of length between 4 and 10')
-  ] 
-  , 
+  ],
+  validateRequest,
   async (req:Request,res:Response) => {
-    const errors = validationResult(req);
 
-    if(!errors.isEmpty()){
-      //return res.status(400).send(errors.array());
-      // throw new Error("Email and Password are Required");
-
-      console.log("error is " , errors.array());
-
-      throw new RequestValidationError(errors.array());
-    }
     
     const {email , password } = req.body;
 
