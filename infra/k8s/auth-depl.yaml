@@ -1,3 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+type: Opaque
+data:
+  JWT_KEY: base64-encoded  # Add this Secret definition
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +27,15 @@ spec:
         image: nickraj/auth
         ports:
         - containerPort: 3000
+        env:  # Add this section to reference the JWT_KEY from the secret
+        - name: JWT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: JWT_KEY
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -30,4 +48,3 @@ spec:
       port: 3000
       targetPort: 3000
   type: ClusterIP
-

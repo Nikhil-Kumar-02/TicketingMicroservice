@@ -43,11 +43,15 @@ router.post("/api/users/signup" ,
     const user = User.build({email , password});
     await user.save();
 
+    if(!process.env.JWT_KEY){
+      throw new Error("Unable to find JWT_KEY");
+    }
+
     //generate jsonwebtoken and 
     const userJwt = jwt.sign({
       id: user._id,
       email: user.email,
-    } , "abcd");
+    } , process.env.JWT_KEY);
 
     //store it on session object
     req.session = {
