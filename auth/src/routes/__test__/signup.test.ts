@@ -69,3 +69,18 @@ it("return 400 on not passing on the password " , async () => {
     .expect(400);
 })
 
+it("return jwt token in cookie to set in the browser " , async () => {
+  const response = await request(app)
+    .post("/api/users/signup")
+    .send({
+      email : "test@gmail.com",
+      password : "password"
+    })
+    expect(console.log(response));
+  // Check if the response has the 'Set-Cookie' header
+  expect(response.headers['set-cookie']).toBeDefined();
+
+  // Optionally, you can check if the JWT token is present in the cookie
+  const cookie = response.headers['set-cookie'][0];
+  expect(cookie).toContain('session=');
+})
