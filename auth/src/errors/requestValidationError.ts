@@ -38,7 +38,7 @@ export class RequestValidationError extends CustomError{
   serializeErrors(){
     const formattedError = this.errors.map((entry) => {
       if ('path' in entry) {
-        console.log("path " , entry.path);
+        // console.log("path " , entry.path);
         return {
           message: entry.msg,
           field: entry.path, 
