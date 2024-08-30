@@ -76,7 +76,7 @@ it("return jwt token in cookie to set in the browser " , async () => {
       email : "test@gmail.com",
       password : "password"
     })
-    expect(console.log(response));
+    // expect(console.log(response));
   // Check if the response has the 'Set-Cookie' header
   expect(response.headers['set-cookie']).toBeDefined();
 
