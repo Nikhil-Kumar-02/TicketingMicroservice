@@ -78,7 +78,8 @@ it("return jwt token in cookie to set in the browser " , async () => {
     })
     // expect(console.log(response));
   // Check if the response has the 'Set-Cookie' header
-  expect(response.headers['set-cookie']).toBeDefined();
+  expect(response.headers['set-cookie']).toBeDefined();0
+  expect(response.get('Set-Cookie')).toBeDefined();
 
   // Optionally, you can check if the JWT token is present in the cookie
   const cookie = response.headers['set-cookie'][0];
