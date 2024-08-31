@@ -14,3 +14,10 @@ it("response with details about current user " , async () => {
     expect(response.body.currentUser.email).toEqual("test@gmail.com");
     }
 })
+
+it("response with null about current user " , async () => {
+    const response = await request(app)
+                    .get("/api/users/currentUser")
+
+    expect(response.body.currentUser).toBeNull()
+})
