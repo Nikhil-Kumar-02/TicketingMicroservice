@@ -27,7 +27,7 @@ router.post("/api/users/signup" ,
     const existingUser = await User.findOne({email});
 
     if(existingUser){
-      console.log("Email is already registered with us  ;");
+      console.log("Email is already registered with us ");
       throw new BadRequestError("This email is already registered");
     }
 
