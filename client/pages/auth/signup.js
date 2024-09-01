@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import useRequest from '../../hooks/use-Request';
+import Router from 'next/router'
 
 export default () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [makeRequest , errors] = useRequest( "post" , "/api/users/signup" , {email,password} );
+  const [makeRequest , errors] = useRequest( "post" , "/api/users/signup" , {email,password} , 
+     () => Router.push('/') );
 
   const emailError = errors
     .filter(err => err.field === "email")
