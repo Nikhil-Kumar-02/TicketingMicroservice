@@ -8,7 +8,8 @@ export default () => {
   const [password, setPassword] = useState('');
 
   const [makeRequest , errors] = useRequest( "post" , "/api/users/signup" , {email,password} , 
-     () => Router.push('/') );
+     (data) => Router.push({ pathname : '/', query : data } ) 
+    );
 
   const emailError = errors
     .filter(err => err.field === "email")
@@ -19,7 +20,6 @@ export default () => {
     .filter(err => err.field === "password")
     .map(err => <li key={err.message}>{err.message}</li>);
   
-
   const onSubmit = async event => {
     event.preventDefault();
 
@@ -42,6 +42,12 @@ export default () => {
             <ul className="my-0">
               {emailError}
             </ul>
+          </div>
+        )}
+        {emailError.length === 0 && errors.length>0 && !errors[0].field && (
+          <div className="alert alert-danger">
+            <h6>Ooops....</h6>
+              <h5>{errors[0].message}</h5>
           </div>
         )}
       </div>
