@@ -27,6 +27,7 @@ LandingPage.getInitialProps = async ({ req }) => {
 
     return data;
   }
+  
   return {};
 };
 
