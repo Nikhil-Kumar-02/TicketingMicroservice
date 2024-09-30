@@ -24,3 +24,7 @@ build:
         manual:
           - src: "**/*.js"
             dest: .
+
+#this is unsafe - type this to bypass the security error when working with ingress as the
+#browser asks for the security certificate and my backend service is not able to provide that
+#hence getting that error
