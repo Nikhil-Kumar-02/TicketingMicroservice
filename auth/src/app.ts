@@ -7,8 +7,7 @@ import { currentUserRoute } from "./routes/current-user";
 import { signInRoute } from "./routes/signin";
 import { signOutRoute } from "./routes/signout";
 import { signUpRoute } from "./routes/sigup";
-import { errorHandler } from "./middlewares/err-handler";
-import { NotFoundError } from "./errors/notFoundError";
+import { errorHandler , NotFoundError } from "@nkticket/common";
 
 const app = express();
 app.set("trust proxy" , true);

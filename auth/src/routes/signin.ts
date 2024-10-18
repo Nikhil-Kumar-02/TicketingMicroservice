@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { validateRequest } from "../middlewares/validate-request";
+import { validateRequest , BadRequestError } from "@nkticket/common";
 import { User } from "../models/user";
-import { BadRequestError } from "../errors/badRequestError";
 import { Password } from "../services/password";
 const router = express.Router();
 import jwt from 'jsonwebtoken';
@@ -55,5 +54,7 @@ router.post("/api/users/signin" ,
     return res.status(200).send("Signed In Sucessfully");
   }
 )
+
+
 
 export { router as signInRoute };

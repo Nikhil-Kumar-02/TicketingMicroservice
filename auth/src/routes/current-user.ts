@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { currentUser } from "../middlewares/current-user";
+import { currentUser } from "@nkticket/common";
 
 
 router.get("/api/users/currentUser" , currentUser , (req,res) => {
