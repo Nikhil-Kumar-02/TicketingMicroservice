@@ -4,7 +4,7 @@ import {json} from "body-parser";
 import cookieSession from "cookie-session";
 import { createTicket } from "./routes/new";
 
-import { errorHandler , NotFoundError } from "@nkticket/common";
+import { errorHandler , NotFoundError , currentUser } from "@nkticket/common";
 
 const app = express();
 app.set("trust proxy" , true);
@@ -16,6 +16,7 @@ app.use(cookieSession({
   secure: process.env.NODE_ENV !== "test",
 }))
 
+app.use(currentUser);
 app.use(createTicket);
 
 app.all('*' , ()=>{
