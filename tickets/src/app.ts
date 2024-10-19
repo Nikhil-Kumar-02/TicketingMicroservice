@@ -2,6 +2,7 @@ import express from "express";
 import 'express-async-errors';
 import {json} from "body-parser";
 import cookieSession from "cookie-session";
+import { createTicket } from "./routes/new";
 
 import { errorHandler , NotFoundError } from "@nkticket/common";
 
@@ -15,6 +16,7 @@ app.use(cookieSession({
   secure: process.env.NODE_ENV !== "test",
 }))
 
+app.use(createTicket);
 
 app.all('*' , ()=>{
   throw new NotFoundError();
