@@ -13,21 +13,20 @@ spec:
         app: auth
     spec:
       containers:
-      - name: auth
-        image: nickraj/auth
-        ports:
-        - containerPort: 3000
-        env:  # Add this section to reference the JWT_KEY from the secret
-        - name: "MONGO_URI"
-            value: mongodb://auth-mongo-srv:27017/auth
-        - name: JWT_KEY
-          valueFrom:
-            secretKeyRef:
-              name: jwt-secret
-              key: JWT_KEY
+        - name: auth
+          image: nickraj/auth
+          ports:
+            - containerPort: 3000
+          env: # Add this section to reference the JWT_KEY from the secret
+            - name: MONGO_URI
+              value: "mongodb://auth-mongo-srv:27017/auth"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
