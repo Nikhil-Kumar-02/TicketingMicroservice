@@ -14,7 +14,6 @@ it("can only be acessed if the user is signed in" , async () => {
 
 it("returns status other than 401 when the user is signed in" , async () => {
   const cookie = getCookieAfterSignIn();
-
   const response = await request(app).post('/api/tickets')
   .set("Cookie" , cookie)
   .send({});
@@ -23,15 +22,53 @@ it("returns status other than 401 when the user is signed in" , async () => {
 })
 
 it("returns an error if an invalid title is provided" , async () => {
-
+  const cookie = getCookieAfterSignIn();
+  await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    title : "",
+    price : 10
+  })
+  .expect(400);
+  
+  await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    price : 10
+  })
+  .expect(400);
 });
 
 it("returns an error if an invalid price is provided" , async () => {
+  const cookie = getCookieAfterSignIn();
+  await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    title : "concert",
+    price : -10
+  })
+  .expect(400);
 
+  await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    title : "concert",
+  })
+  .expect(400);
 });
 
 it("creates a tickets with valid inputs" , async () => {
+  //we are making request to check if the data in created and saved to mongodb but we are assuming that
+  //data is created and saved to db not sure
 
+  const cookie = getCookieAfterSignIn();
+  await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    title : "concert",
+    price : 10
+  })
+  .expect(201);
 });
 
 
