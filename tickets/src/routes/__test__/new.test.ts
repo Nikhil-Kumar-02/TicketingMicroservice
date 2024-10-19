@@ -59,7 +59,7 @@ it("returns an error if an invalid price is provided" , async () => {
 
 it("creates a tickets with valid inputs" , async () => {
   //we are making request to check if the data in created and saved to mongodb but we are assuming that
-  //data is created and saved to db not sure
+  //data is created and saved to db
 
   const cookie = getCookieAfterSignIn();
   await request(app).post("/api/tickets")
