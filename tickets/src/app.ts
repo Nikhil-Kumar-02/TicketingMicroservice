@@ -5,6 +5,7 @@ import cookieSession from "cookie-session";
 import { createTicket } from "./routes/new";
 import { showTicket } from "./routes/show";
 import { errorHandler , NotFoundError , currentUser } from "@nkticket/common";
+import { getAllTickets } from "./routes";
 
 const app = express();
 app.set("trust proxy" , true);
@@ -19,6 +20,7 @@ app.use(cookieSession({
 app.use(currentUser);
 app.use(createTicket);
 app.use(showTicket);
+app.use(getAllTickets);
 
 app.all('*' , ()=>{
   throw new NotFoundError();

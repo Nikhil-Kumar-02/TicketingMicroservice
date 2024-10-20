@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { getCookieAfterSignIn } from '../../test/setup';
-import { Ticket } from '../../models/ticket';
 
 it("returns a 404 if the ticket is not found " , async () => {
   await request(app).get('/api/tickets/randomid').expect(404);
