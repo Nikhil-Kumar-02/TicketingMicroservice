@@ -3,7 +3,7 @@ import 'express-async-errors';
 import {json} from "body-parser";
 import cookieSession from "cookie-session";
 import { createTicket } from "./routes/new";
-
+import { showTicket } from "./routes/show";
 import { errorHandler , NotFoundError , currentUser } from "@nkticket/common";
 
 const app = express();
@@ -18,6 +18,7 @@ app.use(cookieSession({
 
 app.use(currentUser);
 app.use(createTicket);
+app.use(showTicket);
 
 app.all('*' , ()=>{
   throw new NotFoundError();

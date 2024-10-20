@@ -18,7 +18,6 @@ it("returns status other than 401 when the user is signed in" , async () => {
   const response = await request(app).post('/api/tickets')
   .set("Cookie" , cookie)
   .send({});
-  console.log("the code  is " , response.status);
   expect(response.status).not.toEqual(401);
 })
 
