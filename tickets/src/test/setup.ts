@@ -27,12 +27,12 @@ afterAll(async() => {
   await mongoose.connection.close();
 });
 
-export const getCookieAfterSignIn = () => {
+export const getCookieAfterSignIn = (id?:String) => {
   const email = "test@gmail.com"
 
   //build a jwt payload {id , email}
   const payload = {
-    id : "123456789",
+    id : id || "123456789",
     email
   }
 
