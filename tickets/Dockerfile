@@ -1,11 +1,15 @@
-FROM node:alpine
+# Use a slightly larger image to reduce compilation time
+FROM node:18-slim
 
+# Set working directory
 WORKDIR /app
 
-COPY ./package.json .
+# Install dependencies only when package.json or lock file changes
+COPY package.json package-lock.json ./
+RUN npm install --omit=dev --prefer-offline
 
-RUN npm install --omit=dev
-
+# Copy application files
 COPY . .
 
-CMD [ "npm" , "start" ]
+# Start the application
+CMD ["npm", "start"]
