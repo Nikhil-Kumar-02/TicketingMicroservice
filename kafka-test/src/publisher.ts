@@ -7,4 +7,8 @@ const kafka = new Kafka({
   logLevel: logLevel.WARN,     // Optional to reduce verbosity
 });
 
-new TicketCreatedPublisher(kafka).publishMessage();
+new TicketCreatedPublisher(kafka).publishMessage({ 
+  id : "123",
+  title : "concert",
+  price : 3000
+});
