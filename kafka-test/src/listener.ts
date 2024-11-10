@@ -1,4 +1,4 @@
-import { Admin, Consumer, Kafka, logLevel } from 'kafkajs';
+import { Kafka, logLevel } from 'kafkajs';
 import { TicketCreatedListener } from './events/ticket-created-listener';
 
 const kafka = new Kafka({

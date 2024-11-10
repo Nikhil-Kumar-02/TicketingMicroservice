@@ -15,11 +15,11 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
 
   logRecievedData(data: TicketCreatedEvent["data"], topic: string, partition: number) {
     console.log('Event data!', data);
-    console.log(data.id);
-    console.log(data.title);
-    console.log(data.price);
-    console.log(topic);
-    console.log(partition);
+    // console.log(data.id);
+    // console.log(data.title);
+    // console.log(data.price);
+    // console.log(topic);
+    // console.log(partition);
   }
 
   listenToMessages = async () => {
@@ -32,11 +32,10 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
 
       await this.consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-          const value = message.value?.toString();
-
-          if (value) {
+          const dataString = message.value?.toString();
+          if (dataString) {
             try {
-              const parsedData: unknown = JSON.parse(value);
+              const parsedData: unknown = JSON.parse(dataString);
 
               if (this.isTicketCreatedEventData(parsedData)) {
                 this.logRecievedData(parsedData, topic, partition);
@@ -55,7 +54,7 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     }
   }
 
-  // Type guard to validate parsed data structure
+  // Type guard to validate parsed data structure -> type predicate or type narrowing
   private isTicketCreatedEventData(data: any): data is TicketCreatedEvent["data"] {
     return (
       typeof data.id === "string" &&
