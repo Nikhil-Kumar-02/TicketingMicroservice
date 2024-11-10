@@ -1,9 +1,16 @@
 import { Admin, Consumer, Kafka } from "kafkajs";
+import { Subjects } from "./subjects";
 
-export abstract class Listener{
-  abstract topicName : string;
+interface Event{
+  subject : Subjects;
+  data : any;
+}
+
+export abstract class Listener<T extends Event>{
+  abstract topicName : T["subject"];
   abstract groupName : string;
   abstract listenToMessages : () => void;
+  abstract logRecievedData(data : T["data"] , topic: string,partition: number) : void
   private client : Admin;
   abstract consumer : Consumer;
 
