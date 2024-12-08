@@ -1,4 +1,3 @@
-import { Kafka, Producer } from "kafkajs";
 import { Publisher } from "./base-publisher";
 import { Subjects } from "./subjects";
 import { TicketCreatedEvent } from "./ticket-created-event";

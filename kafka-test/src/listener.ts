@@ -7,4 +7,25 @@ const kafka = new Kafka({
   logLevel: logLevel.WARN,    
 });
 
-new TicketCreatedListener(kafka).listenToMessages();
+const ticketCreatedListener = new TicketCreatedListener(kafka);
+
+async function startListeners() {
+  try {
+    await ticketCreatedListener.connectToListener();
+
+    // Graceful shutdown handling
+    const gracefulShutdown = async () => {
+      console.log("Shutting down gracefully...");
+      await ticketCreatedListener.disconnectListener();
+      process.exit(0);
+    };
+
+    process.on("SIGINT", gracefulShutdown);
+    process.on("SIGTERM", gracefulShutdown);
+    
+  } catch (error) {
+    console.error("Error starting listeners:", error);
+  }
+}
+
+startListeners();

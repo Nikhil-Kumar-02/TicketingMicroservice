@@ -9,57 +9,23 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   groupName = 'test-group';
 
   constructor(kafka: Kafka) {
-    super(kafka);
+    super();
     this.consumer = kafka.consumer({ groupId: this.groupName });
   }
 
-  logRecievedData(data: TicketCreatedEvent["data"], topic: string, partition: number) {
-    console.log('Event data!', data);
-    // console.log(data.id);
-    // console.log(data.title);
-    // console.log(data.price);
-    // console.log(topic);
-    // console.log(partition);
+  logReceivedData(data: TicketCreatedEvent["data"], topic: string, partition: number) {
+    console.log("Received TicketCreatedEvent:");
+    console.log("Data:", data);
+    console.log("Topic:", topic);
+    console.log("Partition:", partition);
   }
 
-  listenToMessages = async () => {
-    try {
-      await this.setupTopic();
-      await this.consumer.connect();
-
-      const topic = this.topicName;
-      await this.consumer.subscribe({ topic, fromBeginning: true });
-
-      await this.consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          const dataString = message.value?.toString();
-          if (dataString) {
-            try {
-              const parsedData: unknown = JSON.parse(dataString);
-
-              if (this.isTicketCreatedEventData(parsedData)) {
-                this.logRecievedData(parsedData, topic, partition);
-              } else {
-                console.error("Received data does not match TicketCreatedEvent.data format");
-              }
-            } catch (error) {
-              console.error("Failed to parse message value:", error);
-            }
-          }
-        },
-      });
-      console.log(`Listening for messages on topic "${topic}"`);
-    } catch (error) {
-      console.error("Error in listener:", error);
-    }
-  }
-
-  // Type guard to validate parsed data structure -> type predicate or type narrowing
-  private isTicketCreatedEventData(data: any): data is TicketCreatedEvent["data"] {
+  validateMessage(data: any): data is TicketCreatedEvent["data"] {
     return (
       typeof data.id === "string" &&
       typeof data.title === "string" &&
       typeof data.price === "number"
     );
   }
+  
 }
