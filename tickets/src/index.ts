@@ -30,6 +30,7 @@ const start = async () => {
 
     await kafkaManager.setupTopics([
       { topicName: Subjects.TicketCreated, numPartitions: 3, replicationFactor: 1 },
+      { topicName: Subjects.TicketUpdated, numPartitions: 3, replicationFactor: 1 },
       // Add other topics as needed
     ]);
 

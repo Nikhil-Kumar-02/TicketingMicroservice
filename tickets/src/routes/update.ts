@@ -3,6 +3,8 @@ import { NotFoundError, RequireAuth, validateRequest , NotAuthorizedError } from
 import { Ticket } from '../models/ticket';
 import mongoose from 'mongoose';
 import { body } from "express-validator";
+import { TicketUpdatedPublisher } from '../events/publisher/ticket-updated-publisher';
+import { KafkaManager } from '../kafkaManager';
 
 const router = express.Router();
 
@@ -48,6 +50,15 @@ router.put("/api/tickets/:id" , RequireAuth ,
       ticket.price = price;
     }
     await ticket.save();
+
+    await new TicketUpdatedPublisher(KafkaManager.getProducer()).publishMessage({
+      id : ticket.id , 
+      title : ticket.title,
+      price : ticket.price,
+      userId : ticket.userId
+    })
+
+
     return res.status(200).send(ticket);
 })
 
