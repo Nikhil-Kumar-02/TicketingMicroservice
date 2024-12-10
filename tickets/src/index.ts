@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 import { app } from "./app";
+import { KafkaManager } from "./kafkaManager";
+import { Subjects } from "@nkticket/common";
+import { Kafka , logLevel } from "kafkajs";
+import { TicketCreatedListener } from "./events/consumer/ticket-created-listener";
+
+const kafka = new Kafka({
+  clientId: "ticket-client",
+  brokers: ["kafka:9092"], 
+  logLevel: logLevel.WARN,
+});
 
 const start = async () => {
   if(!process.env.MONGO_URI){
@@ -7,10 +17,58 @@ const start = async () => {
   }
   try {
     await mongoose.connect(process.env.MONGO_URI);
+    console.log('connected to mongodb');
   } catch (err) {
     console.error(err);
   }
-  console.log('connected to mongodb');
+
+  try {
+    KafkaManager.setInstance(kafka);
+
+    const kafkaManager = KafkaManager.getInstance();
+    await kafkaManager.connectProducer();
+
+    await kafkaManager.setupTopics([
+      { topicName: Subjects.TicketCreated, numPartitions: 3, replicationFactor: 1 },
+      // Add other topics as needed
+    ]);
+
+    const gracefulShutdown = async () => {
+      console.log("Shutting down gracefully...");
+      await kafkaManager.disconnectProducer();
+      process.exit(0);
+    };
+
+    process.on("SIGINT", gracefulShutdown);
+    process.on("SIGTERM", gracefulShutdown);
+  } catch (error) {
+    console.error("Error during Kafka initialization or message publishing:", error);
+    process.exit(1); // Exit with error code
+  }
+
+  const ticketCreatedListener = new TicketCreatedListener(kafka);
+
+  async function startListeners() {
+    try {
+      await ticketCreatedListener.connectToListener();
+
+      // Graceful shutdown handling
+      const gracefulShutdown = async () => {
+        console.log("Shutting down gracefully...");
+        await ticketCreatedListener.disconnectListener();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", gracefulShutdown);
+      process.on("SIGTERM", gracefulShutdown);
+      
+    } catch (error) {
+      console.error("Error starting listeners:", error);
+    }
+  }
+
+  startListeners();
+
   app.listen(3000 , () => {
     console.log("running auth on port 3000 !!!");
   })

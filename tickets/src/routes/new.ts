@@ -2,6 +2,8 @@ import express , {Request , Response} from 'express';
 import { RequireAuth , validateRequest } from '@nkticket/common';
 import { body } from "express-validator";
 import { Ticket } from '../models/ticket';
+import { TicketCreatedPublisher } from '../events/publisher/ticket-created-publisher';
+import { KafkaManager } from '../kafkaManager';
 
 const router = express.Router();
 
@@ -27,6 +29,14 @@ router.post("/api/tickets" , RequireAuth ,
     });
 
     await ticket.save();
+
+    await new TicketCreatedPublisher(KafkaManager.getProducer()).publishMessage({
+      id : ticket.id , 
+      title : ticket.title,
+      price : ticket.price,
+      userId : ticket.userId
+    })
+
     return res.status(201).send(ticket);
 })
 
