@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 
 let mongo:MongoMemoryServer;
 
+jest.mock("../kafkaManager.ts");
+
 beforeAll(async () => {
   process.env.JWT_KEY = "abcd";
   mongo = await MongoMemoryServer.create();
