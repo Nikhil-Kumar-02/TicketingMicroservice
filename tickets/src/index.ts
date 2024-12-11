@@ -5,12 +5,6 @@ import { Subjects } from "@nkticket/common";
 import { Kafka , logLevel } from "kafkajs";
 import { TicketCreatedListener } from "./events/consumer/ticket-created-listener";
 
-const kafka = new Kafka({
-  clientId: "ticket-client",
-  brokers: ["kafka:9092"], 
-  logLevel: logLevel.WARN,
-});
-
 const start = async () => {
   if(!process.env.MONGO_URI){
     throw new Error("MONGO URI must be defined")
@@ -21,6 +15,19 @@ const start = async () => {
   } catch (err) {
     console.error(err);
   }
+
+  if(!process.env.KAFKA_BROKER_ID){
+    throw new Error("KAFKA_BROKER_ID must be defined")
+  }
+  if(!process.env.KAFKA_CLIENT_ID){
+    throw new Error("KAFKA_CLIENT_ID must be defined")
+  }
+  
+  const kafka = new Kafka({
+    clientId: process.env.KAFKA_CLIENT_ID,
+    brokers: [process.env.KAFKA_BROKER_ID], 
+    logLevel: logLevel.WARN,
+  });
 
   try {
     KafkaManager.setInstance(kafka);

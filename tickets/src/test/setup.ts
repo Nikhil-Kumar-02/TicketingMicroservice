@@ -7,6 +7,7 @@ let mongo:MongoMemoryServer;
 jest.mock("../kafkaManager.ts");
 
 beforeAll(async () => {
+  jest.clearAllMocks();
   process.env.JWT_KEY = "abcd";
   mongo = await MongoMemoryServer.create();
   const mongoUri = mongo.getUri();
