@@ -2,11 +2,11 @@ import express from "express";
 import 'express-async-errors';
 import {json} from "body-parser";
 import cookieSession from "cookie-session";
-import { createTicket } from "./routes/new";
-import { showTicket } from "./routes/show";
 import { errorHandler , NotFoundError , currentUser } from "@nkticket/common";
+import { createTicket } from "./routes/new";
 import { getAllTickets } from "./routes";
-import { updateTicket } from "./routes/update";
+import { showTicket } from "./routes/show";
+import { deleteTicket } from "./routes/delete";
 
 const app = express();
 app.set("trust proxy" , true);
@@ -22,7 +22,7 @@ app.use(currentUser);
 app.use(createTicket);
 app.use(showTicket);
 app.use(getAllTickets);
-app.use(updateTicket);
+app.use(deleteTicket);
 
 app.all('*' , ()=>{
   throw new NotFoundError();
