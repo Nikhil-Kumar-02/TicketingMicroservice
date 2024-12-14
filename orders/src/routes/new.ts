@@ -1,9 +1,9 @@
 import express , { Request , Response } from "express";
-import { BadRequestError, NotFoundError, OrderStatus, RequireAuth , validateRequest } from "@nkticket/common";
+import { BadRequestError, NotFoundError, RequireAuth , validateRequest } from "@nkticket/common";
 import { body } from "express-validator";
 import mongoose from "mongoose";
 import { Ticket } from "../model/ticket";
-import { Order } from "../model/orders";
+import { Order , OrderStatus } from "../model/orders";
 const router = express.Router();
 
 router.post('/api/orders' ,
@@ -28,31 +28,27 @@ router.post('/api/orders' ,
     }
 
     //make sure this ticket is not already reserved that is for 15min
-    
-    const existingOrder = await Order.findOne({
-      ticket : ticket,
-      status : {
-        $in : [
-          OrderStatus.Created,
-          OrderStatus.AwaitingPayment,
-          OrderStatus.Complete
-        ]
-      }
-    })
+    const isReserved = await ticket.isReserved();
 
-    const existingOrder = await ticket.isReserved();
-
-    if(existingOrder){
+    if(isReserved){
       throw new BadRequestError("The ticket is already Reserved");
     }
 
     //calculate an expiration time for the order
-
+    const expirationTime = new Date(Date.now() + 1000*60*15);
 
     //build the order and save it to database
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt: expirationTime,
+      ticket
+    })
+
+    await order.save();
 
     //publish an event saying that an order has been created
-  return res.status(201).send({});
+    return res.status(201).send(order);
 })
 
 export {router as createTicket};
