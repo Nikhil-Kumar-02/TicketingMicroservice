@@ -4,6 +4,9 @@ import { body } from "express-validator";
 import mongoose from "mongoose";
 import { Ticket } from "../model/ticket";
 import { Order , OrderStatus } from "../model/orders";
+import { KafkaManager } from "../kafkaManager";
+import { OrderCreatedPublsiher } from "../events/publishers/order-created-publisher";
+
 const router = express.Router();
 
 router.post('/api/orders' ,
@@ -48,6 +51,16 @@ router.post('/api/orders' ,
     await order.save();
 
     //publish an event saying that an order has been created
+    await new OrderCreatedPublsiher(KafkaManager.getProducer()).publishMessage({
+      id: order.id,
+      status: order.status,
+      userId: req.currentUser!.id,
+      expiresAt: order.expiresAt.toISOString(),
+      ticket: {
+        id: ticket.id,
+        price: +ticket.price
+      }
+    })
     return res.status(201).send(order);
 })
 

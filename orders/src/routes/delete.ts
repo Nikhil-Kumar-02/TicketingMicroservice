@@ -3,6 +3,8 @@ import express , { Request , Response } from "express";
 import { param } from "express-validator";
 import mongoose from "mongoose";
 import { Order } from "../model/orders";
+import { OrderCancelledPublsiher } from "../events/publishers/order-cancelled-publisher";
+import { KafkaManager } from "../kafkaManager";
 
 const router = express.Router();
 
@@ -34,6 +36,12 @@ router.delete('/api/orders/:orderId' ,
     await order.save();
 
     //publish an event saythis this was cancelled
+    await new OrderCancelledPublsiher(KafkaManager.getProducer()).publishMessage({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id
+      }
+    })
   
     return res.status(204).send(order);
 })
