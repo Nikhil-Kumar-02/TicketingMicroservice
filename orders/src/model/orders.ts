@@ -2,6 +2,8 @@ import mongoose, { mongo, Mongoose } from "mongoose";
 import { OrderStatus } from "@nkticket/common";
 import { TicketDoc } from "./ticket";
 
+export  {OrderStatus };
+
 //an interface that describes  the properties that are required to create a new order
 interface OrderAttrs{
   userId: string;
