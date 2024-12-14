@@ -70,3 +70,4 @@ it("reserves a ticket to mark that ticket a status of created" , async () => {
 
 });
 
+it.todo("emits an order created event");

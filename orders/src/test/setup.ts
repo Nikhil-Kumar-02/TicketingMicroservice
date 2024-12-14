@@ -1,6 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+const crypto = require('crypto');
 
 let mongo:MongoMemoryServer;
 
@@ -33,9 +34,14 @@ afterAll(async() => {
 export const getCookieAfterSignIn = (id?:String) => {
   const email = "test@gmail.com"
 
+  if(!id){
+    const randomNumber = crypto.randomInt(100000000, 1000000000); 
+    id = randomNumber.toString();
+  }
+
   //build a jwt payload {id , email}
   const payload = {
-    id : id || "123456789",
+    id : id,
     email
   }
 
