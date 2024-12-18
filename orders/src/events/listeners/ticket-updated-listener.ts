@@ -4,10 +4,10 @@ import { TicketUpdatedEvent } from "@nkticket/common";
 import { Subjects } from "@nkticket/common";
 import { Ticket } from "../../model/ticket";
 
-export class TicketCreatedListener extends Listener<TicketUpdatedEvent> {
+export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   consumer: Consumer;
   topicName: Subjects.TicketUpdated = Subjects.TicketUpdated;
-  groupName = 'orders-group';
+  groupName = 'order-service-ticket-updated-group';
 
   constructor(kafka: Kafka) {
     super();

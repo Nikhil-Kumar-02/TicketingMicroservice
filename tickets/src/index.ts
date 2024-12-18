@@ -54,28 +54,28 @@ const start = async () => {
     process.exit(1); // Exit with error code
   }
 
-  const ticketCreatedListener = new TicketCreatedListener(kafka);
+  // const ticketCreatedListener = new TicketCreatedListener(kafka);
 
-  async function startListeners() {
-    try {
-      await ticketCreatedListener.connectToListener();
+  // async function startListeners() {
+  //   try {
+  //     await ticketCreatedListener.connectToListener();
 
-      // Graceful shutdown handling
-      const gracefulShutdown = async () => {
-        console.log("Shutting down gracefully...");
-        await ticketCreatedListener.disconnectListener();
-        process.exit(0);
-      };
+  //     // Graceful shutdown handling
+  //     const gracefulShutdown = async () => {
+  //       console.log("Shutting down gracefully...");
+  //       await ticketCreatedListener.disconnectListener();
+  //       process.exit(0);
+  //     };
 
-      process.on("SIGINT", gracefulShutdown);
-      process.on("SIGTERM", gracefulShutdown);
+  //     process.on("SIGINT", gracefulShutdown);
+  //     process.on("SIGTERM", gracefulShutdown);
       
-    } catch (error) {
-      console.error("Error starting listeners:", error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error("Error starting listeners:", error);
+  //   }
+  // }
 
-  startListeners();
+  // startListeners();
 
   app.listen(3000 , () => {
     console.log("running auth on port 3000 !!!");

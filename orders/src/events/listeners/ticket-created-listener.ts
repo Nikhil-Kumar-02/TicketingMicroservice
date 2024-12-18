@@ -7,7 +7,7 @@ import { Ticket } from "../../model/ticket";
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   consumer: Consumer;
   topicName: Subjects.TicketCreated = Subjects.TicketCreated;
-  groupName = 'orders-group';
+  groupName = 'order-service-ticket-created-group';
 
   constructor(kafka: Kafka) {
     super();
