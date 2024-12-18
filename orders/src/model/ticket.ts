@@ -3,6 +3,7 @@ import { Order , OrderStatus } from "./orders";
 
 //an interface that describes  the properties that are required to create a new order
 interface TicketAttrs{
+  id : string;
   title: string;
   price: Number;
 }
@@ -42,8 +43,12 @@ const ticketSchema = new mongoose.Schema(
 );
 
 //schema.statics.method_name is the way of adding method to a model
-ticketSchema.statics.build = (arrts:TicketAttrs) => {
-  return new Ticket(arrts);
+ticketSchema.statics.build = (attrs:TicketAttrs) => {
+  return new Ticket({
+    _id : attrs.id,
+    title : attrs.title,
+    price :  attrs.price
+  });
 }
 
 //schema.methods.method_name is the way of adding method to a model

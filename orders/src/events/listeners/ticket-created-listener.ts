@@ -20,6 +20,7 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     console.log("Topic:", topic);
     console.log("Partition:", partition);
     const ticket = Ticket.build({
+      id : data.id,
       title: data.title,
       price: data.price
     })
