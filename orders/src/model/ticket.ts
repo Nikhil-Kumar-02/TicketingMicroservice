@@ -1,17 +1,19 @@
-import mongoose, { mongo, Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import { Order , OrderStatus } from "./orders";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 //an interface that describes  the properties that are required to create a new order
 interface TicketAttrs{
   id : string;
   title: string;
-  price: Number;
+  price: number;
 }
 
 //an interface that describes the properties that a order document has 
 export interface TicketDoc extends mongoose.Document{
   title: string;
-  price: Number;
+  price: number;
+  version : number;
   isReserved() : Promise<boolean>
 }
 
@@ -41,6 +43,9 @@ const ticketSchema = new mongoose.Schema(
     }
   }
 );
+
+ticketSchema.set("versionKey" , "version");
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 //schema.statics.method_name is the way of adding method to a model
 ticketSchema.statics.build = (attrs:TicketAttrs) => {

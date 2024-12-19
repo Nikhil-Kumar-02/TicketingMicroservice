@@ -20,13 +20,14 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     console.log("Topic:", topic);
     console.log("Partition:", partition);
 
-    const ticket = await Ticket.findById(data.id);
+    
+    const {id , price , title , version:incomingVersion} = data;
+
+    const ticket = await Ticket.findOne({_id:id , version:incomingVersion-1});
 
     if(!ticket){
       throw new Error("Ticket not find while updating it in order service");
     }
-
-    const {price , title} = data;
 
     ticket.set({price , title});
     
