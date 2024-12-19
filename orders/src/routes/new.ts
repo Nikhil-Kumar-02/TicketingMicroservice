@@ -56,11 +56,11 @@ router.post('/api/orders' ,
       status: order.status,
       userId: req.currentUser!.id,
       expiresAt: order.expiresAt.toISOString(),
+      version: order.version,
       ticket: {
         id: ticket.id,
         price: +ticket.price
       },
-      version: 0
     })
     return res.status(201).send(order);
 })

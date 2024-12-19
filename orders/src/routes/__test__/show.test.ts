@@ -42,7 +42,8 @@ it("it allow you to acess your orders" , async () => {
   //create a ticket and an order as user #1
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 
@@ -65,7 +66,8 @@ it("it doesnt allow you to acess someones elses order" , async () => {
   //create a ticket and an order as user #1
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 
@@ -88,7 +90,8 @@ it("it doesnt allow you to acess someones elses order" , async () => {
 it("checks if we are getting the desired orders " , async () => {
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 

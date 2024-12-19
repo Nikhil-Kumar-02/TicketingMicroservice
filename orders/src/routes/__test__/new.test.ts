@@ -26,7 +26,8 @@ it("returns an error if the ticket user trying to order is already reserved" , a
   //first create a ticket
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 200
+    price: 200,
+    id: new mongoose.Types.ObjectId().toHexString()
   })
   await ticketCreated.save();
 
@@ -55,7 +56,8 @@ it("reserves a ticket to mark that ticket a status of created" , async () => {
   //first create a ticket
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 200
+    price: 200,
+    id: new mongoose.Types.ObjectId().toHexString()
   })
   await ticketCreated.save();
 

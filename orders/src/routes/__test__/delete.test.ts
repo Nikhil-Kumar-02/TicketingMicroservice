@@ -42,7 +42,8 @@ it("it doesnt allow you to delete someones elses order" , async () => {
   //create a ticket and an order as user #1
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 
@@ -66,7 +67,8 @@ it("it allow you to delete your orders" , async () => {
   //create a ticket and an order as user #1
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 

@@ -1,6 +1,7 @@
-import mongoose, { mongo, Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import { OrderStatus } from "@nkticket/common";
 import { TicketDoc } from "./ticket";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 export  {OrderStatus };
 
@@ -18,6 +19,7 @@ interface OrderDoc extends mongoose.Document{
   status: OrderStatus;
   expiresAt : Date;
   ticket : TicketDoc;
+  version : number;
 }
 
 //an interface that describes the property that the order model has
@@ -55,6 +57,9 @@ const orderSchema = new mongoose.Schema(
     }
   }
 );
+
+orderSchema.set("versionKey" , "version");
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (arrts:OrderAttrs) => {
   return new Order(arrts);

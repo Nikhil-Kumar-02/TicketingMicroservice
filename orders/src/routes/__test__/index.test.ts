@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { getCookieAfterSignIn } from "../../test/setup";
 import { Ticket } from "../../model/ticket";
+import mongoose from "mongoose";
 
 it("retricts user to access endpoint if not authorised" , async () => {
   await request(app)
@@ -23,7 +24,8 @@ it("returns all orders created by the user" , async () => {
   //for that first create a ticket and then associate that ticket with the order
   const ticketCreated = Ticket.build({
     title: "Coldplay:Ticket",
-    price: 20
+    price: 20,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated.save();
 
@@ -46,19 +48,22 @@ it("creates multiple ticket and orders but fetch order only specific to ticket" 
   //create three tickets
   const ticketCreated1 = Ticket.build({
     title: "Coldplay:Ticket1",
-    price: 201
+    price: 201,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated1.save();
 
   const ticketCreated2 = Ticket.build({
     title: "Coldplay:Ticket2",
-    price: 202
+    price: 202,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated2.save();
 
   const ticketCreated3 = Ticket.build({
     title: "Coldplay:Ticket3",
-    price: 203
+    price: 203,
+    id: new mongoose.Types.ObjectId().toHexString()
   });
   await ticketCreated3.save();
 

@@ -38,10 +38,10 @@ router.delete('/api/orders/:orderId' ,
     //publish an event saythis this was cancelled
     await new OrderCancelledPublsiher(KafkaManager.getProducer()).publishMessage({
       id: order.id,
+      version: order.version,
       ticket: {
         id: order.ticket.id
       },
-      version: 0
     })
   
     return res.status(204).send(order);
