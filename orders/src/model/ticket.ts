@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { version } from "mongoose";
 import { Order , OrderStatus } from "./orders";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
@@ -20,6 +20,7 @@ export interface TicketDoc extends mongoose.Document{
 //an interface that describes the property that the order model has
 interface TicketModel extends mongoose.Model<TicketDoc>{
   build(attrs:TicketAttrs):TicketDoc;
+  findbyEvent(event : {id:string , version : number}) : Promise<TicketDoc|null> ;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -45,7 +46,23 @@ const ticketSchema = new mongoose.Schema(
 );
 
 ticketSchema.set("versionKey" , "version");
-ticketSchema.plugin(updateIfCurrentPlugin);
+// ticketSchema.plugin(updateIfCurrentPlugin);
+
+ticketSchema.pre("save" , function(done){
+
+  this.$where = {
+    version : this.get("version") - 1
+  };
+
+  done();
+})
+
+ticketSchema.statics.findbyEvent = (event : {id : string , version : number}) => {
+  return Ticket.findOne({
+    _id : event.id,
+    version : event.version-1
+  })
+};
 
 //schema.statics.method_name is the way of adding method to a model
 ticketSchema.statics.build = (attrs:TicketAttrs) => {

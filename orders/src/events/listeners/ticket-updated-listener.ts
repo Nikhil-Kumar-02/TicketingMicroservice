@@ -21,15 +21,18 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     console.log("Partition:", partition);
 
     
-    const {id , price , title , version:incomingVersion} = data;
+    const {id , price , title , version} = data;
 
-    const ticket = await Ticket.findOne({_id:id , version:incomingVersion-1});
+    const ticket = await Ticket.findbyEvent({
+      id,
+      version
+    });
 
     if(!ticket){
       throw new Error("Ticket not find while updating it in order service");
     }
 
-    ticket.set({price , title});
+    ticket.set({price , title , version});
     
     await ticket.save();
   }
