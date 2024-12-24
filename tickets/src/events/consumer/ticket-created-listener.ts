@@ -13,7 +13,7 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     this.consumer = kafka.consumer({ groupId: this.groupName });
   }
 
-  logReceivedData(data: TicketCreatedEvent["data"], topic: string, partition: number) {
+  async logReceivedData(data: TicketCreatedEvent["data"], topic: string, partition: number) {
     console.log("Received TicketCreatedEvent:");
     console.log("Data:", data);
     console.log("Topic:", topic);

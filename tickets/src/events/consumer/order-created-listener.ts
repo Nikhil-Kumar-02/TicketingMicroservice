@@ -1,6 +1,8 @@
 import { Listener , OrderCreatedEvent, Subjects } from "@nkticket/common";
 import { Consumer, Kafka } from "kafkajs";
 import { Ticket } from "../../models/ticket";
+import { TicketUpdatedPublisher } from "../publisher/ticket-updated-publisher";
+import { KafkaManager } from "../../kafkaManager";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent>{
   topicName: Subjects.OrderCreated = Subjects.OrderCreated;
@@ -33,6 +35,15 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent>{
 
     //save the ticket
     await ticket.save();    
+
+    await new TicketUpdatedPublisher(KafkaManager.getProducer()).publishMessage({
+      id : ticket.id , 
+      title : ticket.title,
+      price : ticket.price,
+      userId : ticket.userId,
+      version : ticket.version,
+      orderId
+    })
   }
 
   validateMessage(data: any): data is OrderCreatedEvent["data"] {
