@@ -5,6 +5,7 @@ import { getCookieAfterSignIn } from "../../../test/setup";
 import request from "supertest";
 import { app } from "../../../app";
 import { Ticket } from "../../../models/ticket";
+import { KafkaManager } from "../../../kafkaManager";
 
 
 const setup = async () => {
@@ -79,3 +80,28 @@ it("sets the order id for a certain ticket and sucessfully increases the version
   expect(ticketfound?.orderId).toEqual(data.id);
 
 })
+
+it("checks if KafkaManager.getProducer is getting invoked or not" , async () => {
+  //first create a ticket in this model
+  const cookie = getCookieAfterSignIn();
+  const ticket = await request(app).post("/api/tickets")
+  .set("Cookie" , cookie)
+  .send({
+    title : "concert",
+    price : 10
+  })
+  .expect(201);
+  expect(ticket.body.version).toEqual(0);
+  expect(ticket.body.orderId).toBeUndefined();
+
+  const { listener, data, topic, partition } = await setup();
+
+  data.ticket.id = ticket.body.id;
+  data.ticket.price = ticket.body.price;
+
+  await listener.logReceivedData(data, topic, partition);
+
+  
+  expect(KafkaManager.getProducer).toHaveBeenCalled();
+
+});
