@@ -3,7 +3,7 @@ import { app } from "./app";
 import { KafkaManager } from "./kafkaManager";
 import { Subjects } from "@nkticket/common";
 import { Kafka , logLevel } from "kafkajs";
-import { TicketCreatedListener } from "./events/consumer/ticket-created-listener";
+import { TicketCreatedListener } from "./events/listener/ticket-created-listener";
 
 const start = async () => {
   if(!process.env.MONGO_URI){

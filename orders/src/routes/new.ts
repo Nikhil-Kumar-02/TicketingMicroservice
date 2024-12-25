@@ -59,7 +59,7 @@ router.post('/api/orders' ,
       version: order.version,
       ticket: {
         id: ticket.id,
-        price: +ticket.price
+        price: ticket.price
       },
     })
     return res.status(201).send(order);
