@@ -1,5 +1,5 @@
 import express , {Request , Response} from 'express';
-import { NotFoundError, RequireAuth, validateRequest , NotAuthorizedError } from '@nkticket/common';
+import { NotFoundError, RequireAuth, validateRequest , NotAuthorizedError, BadRequestError } from '@nkticket/common';
 import { Ticket } from '../models/ticket';
 import mongoose from 'mongoose';
 import { body } from "express-validator";
@@ -33,7 +33,11 @@ router.put("/api/tickets/:id" , RequireAuth ,
     if(!ticket){
       throw new NotFoundError();
     }
-    console.log(ticket.userId , req.currentUser!.id);
+
+    if(ticket.orderId){
+      throw new BadRequestError("cannot edit a reserved ticket");
+    }
+
     //now see if the same user who created this ticket is trying to update it or not
     if(ticket.userId != req.currentUser!.id){
       console.log("the owner and requester are not the same");

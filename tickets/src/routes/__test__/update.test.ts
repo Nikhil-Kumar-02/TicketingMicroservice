@@ -1,6 +1,8 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { getCookieAfterSignIn } from '../../test/setup';
+import { Ticket } from '../../models/ticket';
+import mongoose from 'mongoose';
 
 it("returns 404 if the provided id does not exists " , async () => {
   const cookie = getCookieAfterSignIn();
@@ -119,7 +121,6 @@ it("updates the ticket if provied the valid input" , async () => {
     .expect(201);
 
     const jsonResponse = JSON.parse(ticket.text);
-    console.log('the ticket is ' , jsonResponse);
 
     //now the same authorized and authenticated user will try to update it
     await request(app)
@@ -151,6 +152,33 @@ it("updates the ticket if provied the valid input" , async () => {
     .expect(200)
     
 
+})
+
+it("will not allow to edit the ticket if it is reserved " , async () => {
+  //first create a ticket
+  const cookie = getCookieAfterSignIn();
+  const ticket = await request(app)
+    .post("/api/tickets")
+    .set("Cookie" , cookie)
+    .send({
+      title : "avengers",
+      price: 90
+    })
+
+    const ticketfound = await Ticket.findById(ticket.body.id);
+
+    ticketfound?.set({orderId : new mongoose.Types.ObjectId().toHexString()})
+    await ticketfound?.save();
+
+    await request(app)
+      .put(`/api/tickets/${ticketfound!.id}`)
+      .set("Cookie" , cookie)
+      .send({
+        title : "final Update",
+        price : 100000
+      })
+      .expect(400)
+  
 })
 
 
