@@ -49,6 +49,7 @@ router.post('/api/orders' ,
     })
 
     await order.save();
+    console.log("the order is created and will expire at " , order.expiresAt.toISOString());  
 
     //publish an event saying that an order has been created
     await new OrderCreatedPublsiher(KafkaManager.getProducer()).publishMessage({
