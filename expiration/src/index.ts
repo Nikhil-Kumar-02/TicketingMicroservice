@@ -16,31 +16,6 @@ const start = async () => {
     logLevel: logLevel.WARN,
   });
 
-  try {
-    KafkaManager.setInstance(kafka);
-
-    const kafkaManager = KafkaManager.getInstance();
-    await kafkaManager.connectProducer();
-
-    await kafkaManager.setupTopics([
-      { topicName: Subjects.TicketCreated, numPartitions: 3, replicationFactor: 1 },
-      { topicName: Subjects.TicketUpdated, numPartitions: 3, replicationFactor: 1 },
-      // Add other topics as needed
-    ]);
-
-    const gracefulShutdown = async () => {
-      console.log("Shutting down gracefully...");
-      await kafkaManager.disconnectProducer();
-      process.exit(0);
-    };
-
-    process.on("SIGINT", gracefulShutdown);
-    process.on("SIGTERM", gracefulShutdown);
-  } catch (error) {
-    console.error("Error during Kafka initialization or message publishing:", error);
-    process.exit(1); // Exit with error code
-  }
-
 }
 
 start();
