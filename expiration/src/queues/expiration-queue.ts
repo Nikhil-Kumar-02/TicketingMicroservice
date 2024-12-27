@@ -1,4 +1,6 @@
 import Queue from "bull";
+import { ExpirationCompletePublsiher } from "../events/publisher/expiration-complete-publisher";
+import { KafkaManager } from "../kafkaManager";
 
 interface Payload{
   orderId : string;
@@ -11,7 +13,11 @@ const expirationQueue = new Queue<Payload>("order:expiration" , {
 })
 
 expirationQueue.process(async (job) => {
-  console.log("i wnt to publish expiration complete event for orderid " , job.data.orderId);
+
+  await new ExpirationCompletePublsiher(KafkaManager.getProducer()).publishMessage({
+    orderId : job.data.orderId
+  })
+  
 })
 
 export {expirationQueue};
