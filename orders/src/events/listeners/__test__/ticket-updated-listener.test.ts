@@ -1,6 +1,6 @@
 import { TicketUpdatedListener } from "../ticket-updated-listener";
 import { Ticket } from "../../../model/ticket"; 
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import { TicketUpdatedEvent } from "@nkticket/common";
 
 
