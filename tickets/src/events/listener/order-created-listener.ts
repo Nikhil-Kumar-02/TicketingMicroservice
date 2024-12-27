@@ -47,11 +47,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent>{
   }
 
   validateMessage(data: any): data is OrderCreatedEvent["data"] {
-    return (
-      typeof data.id === "string" &&
-      typeof data.title === "string" &&
-      typeof data.price === "number"
-    );
+    // return (
+    //   typeof data.id === "string" &&
+    //   typeof data.title === "string" &&
+    //   typeof data.price === "number"
+    // );
+    return true;
   }
 
 }

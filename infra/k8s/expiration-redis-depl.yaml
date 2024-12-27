@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: expiratoin-redis-depl
+  name: expiration-redis-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: expiratoin-redis
+      app: expiration-redis
   template:
     metadata:
       labels:
-        app: expiratoin-redis
+        app: expiration-redis
     spec:
       containers:
-        - name: expiratoin-redis
+        - name: expiration-redis
           image: redis:alpine
           ports:
             - containerPort: 6379
@@ -22,10 +22,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: expiratoin-redis-srv
+  name: expiration-redis-srv
 spec:
   selector:
-    app: expiratoin-redis
+    app: expiration-redis
   ports:
     - name: db
       protocol: TCP
