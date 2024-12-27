@@ -18,17 +18,23 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent>{
     console.log("Topic:", topic);
     console.log("Partition:", partition);
 
-    await expirationQueue.add({orderId : data.id});
-  
+    const delay = new Date(data.expiresAt).getTime() - new Date().getTime();
+    console.log("the order will expire after : " , delay);
+
+    await expirationQueue.add({orderId : data.id} , {delay : 10000});
   }
 
   validateMessage(data: any): data is OrderCreatedEvent["data"] {
-    // return (
-    //   typeof data.id === "string" &&
-    //   typeof data.title === "string" &&
-    //   typeof data.price === "number"
-    // );
-    return true;
+    return (
+      typeof data.id === "string" &&
+      typeof data.status === "string" &&
+      typeof data.userId === "string" &&
+      typeof data.expiresAt === "string" &&
+      typeof data.version === "number" &&
+      data.ticket &&
+      typeof data.ticket.id === "string" &&
+      typeof data.ticket.price === "number"
+    );
   }
 
 }

@@ -38,7 +38,7 @@ router.post('/api/orders' ,
     }
 
     //calculate an expiration time for the order
-    const expirationTime = new Date(Date.now() + 1000*60*15);
+    const expirationTime = new Date(Date.now() + 1000*60*5);
 
     //build the order and save it to database
     const order = Order.build({
