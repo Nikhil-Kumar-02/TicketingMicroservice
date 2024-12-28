@@ -14,6 +14,8 @@ const expirationQueue = new Queue<Payload>("order:expiration" , {
 
 expirationQueue.process(async (job) => {
 
+  console.log("publishing the event for expiration completed : ");
+
   await new ExpirationCompletePublsiher(KafkaManager.getProducer()).publishMessage({
     orderId : job.data.orderId
   })

@@ -49,8 +49,8 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent>{
   validateMessage(data: any): data is OrderCancelledEvent["data"] {
     return (
       typeof data.id === "string" &&
-      typeof data.title === "string" &&
-      typeof data.price === "number"
+      typeof data.version === "number" &&
+      typeof data.ticket.id === "string"
     );
   }
 

@@ -5,6 +5,7 @@ import { Subjects } from "@nkticket/common";
 import { Kafka , logLevel } from "kafkajs";
 import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 
 const start = async () => {
   if(!process.env.MONGO_URI){
@@ -57,6 +58,7 @@ const start = async () => {
 
   const ticketCreatedListener = new TicketCreatedListener(kafka);
   const ticketUpdatedListener = new TicketUpdatedListener(kafka);
+  const expirationCompleteListener = new ExpirationCompleteListener(kafka);
 
   async function startCreatedtListeners() {
     try {
@@ -96,8 +98,28 @@ const start = async () => {
     }
   }
 
+  async function startExpirationCompleteListener() {
+    try {
+      await expirationCompleteListener.connectToListener();
+
+      // Graceful shutdown handling
+      const gracefulShutdown = async () => {
+        console.log("Shutting down gracefully...");
+        await expirationCompleteListener.disconnectListener();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", gracefulShutdown);
+      process.on("SIGTERM", gracefulShutdown);
+      
+    } catch (error) {
+      console.error("Error starting listeners:", error);
+    }
+  }
+
   await startCreatedtListeners();
   await startUpdatedListeners();
+  await startExpirationCompleteListener();
 
   app.listen(3000 , () => {
     console.log("running auth on port 3000 !!!");
