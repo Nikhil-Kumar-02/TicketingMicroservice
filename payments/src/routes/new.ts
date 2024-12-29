@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { RequireAuth , BadRequestError , validateRequest , NotFoundError, NotAuthorizedError, OrderStatus } from '@nkticket/common';
 import { Order } from '../model/order';
 import { body } from 'express-validator';
+import { stripe } from '../stripe';
 
 const router = express.Router();
 
@@ -36,7 +37,13 @@ router.post("/api/payments" ,
       throw new BadRequestError("cannot pay for a cancelled order")
     }
 
+    const response = await stripe.charges.create({
+      currency : 'usd',
+      amount : order.price*100,
+      source : token
+    })
 
+    console.log("stripe payment response is : " , response);
 
     res.send({sucess : true});
   }
