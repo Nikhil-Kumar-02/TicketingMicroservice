@@ -122,7 +122,7 @@ const start = async () => {
   await startExpirationCompleteListener();
 
   app.listen(3000 , () => {
-    console.log("running auth on port 3000 !!!");
+    console.log("running orders on port 3000 !!!");
   })
 
 }

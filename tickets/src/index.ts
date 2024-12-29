@@ -101,7 +101,7 @@ const start = async () => {
 
 
   app.listen(3000 , () => {
-    console.log("running auth on port 3000 !!!");
+    console.log("running tickets on port 3000 !!!");
   })
 
 }

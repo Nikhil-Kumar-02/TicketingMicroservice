@@ -2,7 +2,7 @@ import express from "express";
 import 'express-async-errors';
 import {json} from "body-parser";
 import cookieSession from "cookie-session";
-import { errorHandler , NotFoundError , currentUser } from "@nkticket/common";
+import { currentUser, errorHandler , NotFoundError  } from "@nkticket/common";
 
 const app = express();
 app.set("trust proxy" , true);
@@ -21,6 +21,6 @@ app.all('*' , ()=>{
 })
 
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 export { app };

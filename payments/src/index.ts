@@ -3,6 +3,8 @@ import { app } from "./app";
 import { KafkaManager } from "./kafkaManager";
 import { Subjects } from "@nkticket/common";
 import { Kafka , logLevel } from "kafkajs";
+import { OrderCreatedListener } from "./events/listener/order-created-listener";
+import { OrderCancelledListener } from "./events/listener/order-cancelled-listener";
 
 const start = async () => {
   if(!process.env.MONGO_URI){
@@ -53,9 +55,53 @@ const start = async () => {
     process.exit(1); // Exit with error code
   }
 
+  const orderCreatedListener = new OrderCreatedListener(kafka);
+  const orderCancelledListener = new OrderCancelledListener(kafka); 
+
+  async function startCreatedtListeners() {
+    try {
+      await orderCreatedListener.connectToListener();
+
+      // Graceful shutdown handling
+      const gracefulShutdown = async () => {
+        console.log("Shutting down gracefully...");
+        await orderCreatedListener.disconnectListener();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", gracefulShutdown);
+      process.on("SIGTERM", gracefulShutdown);
+      
+    } catch (error) {
+      console.error("Error starting listeners:", error);
+    }
+  }
+
+  async function startCancelledListeners() {
+    try {
+      await orderCancelledListener.connectToListener();
+
+      // Graceful shutdown handling
+      const gracefulShutdown = async () => {
+        console.log("Shutting down gracefully...");
+        await orderCancelledListener.disconnectListener();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", gracefulShutdown);
+      process.on("SIGTERM", gracefulShutdown);
+      
+    } catch (error) {
+      console.error("Error starting listeners:", error);
+    }
+  }
+
+  await startCreatedtListeners();
+  await startCancelledListeners();
+
   
   app.listen(3000 , () => {
-    console.log("running auth on port 3000 !!!");
+    console.log("running payment on port 3000 !!!");
   })
 
 }
