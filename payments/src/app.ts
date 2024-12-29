@@ -3,6 +3,8 @@ import 'express-async-errors';
 import {json} from "body-parser";
 import cookieSession from "cookie-session";
 import { currentUser, errorHandler , NotFoundError  } from "@nkticket/common";
+import { CreatePayment } from "./routes/new";
+
 
 const app = express();
 app.set("trust proxy" , true);
@@ -15,6 +17,7 @@ app.use(cookieSession({
 }))
 
 app.use(currentUser);
+app.use(CreatePayment);
 
 app.all('*' , ()=>{
   throw new NotFoundError();
