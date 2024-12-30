@@ -28,17 +28,21 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
       throw new Error("Expired order Not found");
     }
 
-    order.set({status : OrderStatus.Cancelled});
+    if(order.status !== OrderStatus.Complete){
 
-    await order.save();
-    
-    await new OrderCancelledPublsiher(KafkaManager.getProducer()).publishMessage({
-      id: order.id,
-      version: order.version,
-      ticket: {
-        id: order.ticket.id
-      }
-    });
+      order.set({status : OrderStatus.Cancelled});
+  
+      await order.save();
+      
+      await new OrderCancelledPublsiher(KafkaManager.getProducer()).publishMessage({
+        id: order.id,
+        version: order.version,
+        ticket: {
+          id: order.ticket.id
+        }
+      });
+
+    }
     
   }
 
