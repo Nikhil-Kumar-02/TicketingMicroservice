@@ -4,6 +4,9 @@ import { getCookieAfterSignIn } from '../../test/setup';
 import { Order } from '../../model/order';
 import mongoose from 'mongoose';
 import { OrderStatus } from '@nkticket/common';
+import { stripe } from '../../stripe';
+
+jest.mock('../../stripe');
 
 it("can only be acessed if the user is signed in" , async () => {
   await request(app).post('/api/payments').send({}).expect(401);
@@ -114,3 +117,37 @@ it("throws an error if someone tries to pay for an order that is cancelled" , as
 });
 
 
+it("calls stripe.charges.create with correct arguments", async () => {
+  const userId = new mongoose.Types.ObjectId().toHexString();
+  const cookie = getCookieAfterSignIn(userId);
+
+  // Create an order in the database
+  const order = Order.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    version: 0,
+    userId,
+    price: 20,
+    status: OrderStatus.Created
+  });
+  await order.save();
+
+  // Make a request to the /api/payments endpoint
+  await request(app)
+    .post('/api/payments')
+    .set('Cookie', cookie)
+    .send({
+      token: 'tok_visa', // Stripe test token
+      orderId: order.id
+    })
+    .expect(201);
+
+  // Assert that stripe.charges.create was called
+  expect(stripe.charges.create).toHaveBeenCalled();
+
+  // Assert the correct arguments were passed
+  expect(stripe.charges.create).toHaveBeenCalledWith({
+    currency: 'usd',
+    amount: order.price * 100,
+    source: 'tok_visa'
+  });
+});

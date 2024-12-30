@@ -45,7 +45,7 @@ router.post("/api/payments" ,
 
     console.log("stripe payment response is : " , response);
 
-    res.send({sucess : true});
+    res.status(201).send({sucess : true});
   }
 )
 
