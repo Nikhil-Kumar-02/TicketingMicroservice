@@ -37,9 +37,7 @@ const start = async () => {
     await kafkaManager.connectProducer();
 
     await kafkaManager.setupTopics([
-      { topicName: Subjects.TicketCreated, numPartitions: 3, replicationFactor: 1 },
-      { topicName: Subjects.TicketUpdated, numPartitions: 3, replicationFactor: 1 },
-      // Add other topics as needed
+      { topicName: Subjects.PaymentCreated, numPartitions: 3, replicationFactor: 1 },
     ]);
 
     const gracefulShutdown = async () => {

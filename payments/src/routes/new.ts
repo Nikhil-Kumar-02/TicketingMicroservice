@@ -4,6 +4,8 @@ import { Order } from '../model/order';
 import { body } from 'express-validator';
 import { stripe } from '../stripe';
 import { Payment } from '../model/payment';
+import { PaymentCreatedPublsiher } from '../events/publisher/payment-created-publisher';
+import { KafkaManager } from '../kafkaManager';
 
 const router = express.Router();
 
@@ -46,18 +48,20 @@ router.post("/api/payments" ,
 
     console.log("stripe payment response is : " , response);
 
-    try {
-      const payment = Payment.build({
-        orderId,
-        stripeId: response.id,
-      });
-      await payment.save();
-    } catch (err) {
-      console.error('Error saving payment:', err);
-      throw new Error('Payment save failed');
-    }
+    const payment = Payment.build({
+      orderId,
+      stripeId: response.id,
+    });
+    
+    await payment.save();
 
-    res.status(201).send({sucess : true});
+    await new PaymentCreatedPublsiher(KafkaManager.getProducer()).publishMessage({
+      id: payment.id,
+      orderId : payment.orderId,
+      stripeId:payment.stripeId
+    })
+
+    res.status(201).send(payment);
   }
 )
 
