@@ -3,6 +3,7 @@ import { RequireAuth , BadRequestError , validateRequest , NotFoundError, NotAut
 import { Order } from '../model/order';
 import { body } from 'express-validator';
 import { stripe } from '../stripe';
+import { Payment } from '../model/payment';
 
 const router = express.Router();
 
@@ -44,6 +45,17 @@ router.post("/api/payments" ,
     })
 
     console.log("stripe payment response is : " , response);
+
+    try {
+      const payment = Payment.build({
+        orderId,
+        stripeId: response.id,
+      });
+      await payment.save();
+    } catch (err) {
+      console.error('Error saving payment:', err);
+      throw new Error('Payment save failed');
+    }
 
     res.status(201).send({sucess : true});
   }
