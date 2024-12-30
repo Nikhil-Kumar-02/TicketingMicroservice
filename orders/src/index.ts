@@ -6,6 +6,7 @@ import { Kafka , logLevel } from "kafkajs";
 import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
 import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
+import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
 
 const start = async () => {
   if(!process.env.MONGO_URI){
@@ -59,6 +60,7 @@ const start = async () => {
   const ticketCreatedListener = new TicketCreatedListener(kafka);
   const ticketUpdatedListener = new TicketUpdatedListener(kafka);
   const expirationCompleteListener = new ExpirationCompleteListener(kafka);
+  const paymentCreatedListener = new PaymentCreatedListener(kafka);
 
   async function startCreatedtListeners() {
     try {
@@ -117,9 +119,29 @@ const start = async () => {
     }
   }
 
+  async function startPaymentCreatedListener() {
+    try {
+      await paymentCreatedListener.connectToListener();
+
+      // Graceful shutdown handling
+      const gracefulShutdown = async () => {
+        console.log("Shutting down gracefully...");
+        await paymentCreatedListener.disconnectListener();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", gracefulShutdown);
+      process.on("SIGTERM", gracefulShutdown);
+      
+    } catch (error) {
+      console.error("Error starting listeners:", error);
+    }
+  }
+
   await startCreatedtListeners();
   await startUpdatedListeners();
   await startExpirationCompleteListener();
+  await startPaymentCreatedListener();
 
   app.listen(3000 , () => {
     console.log("running orders on port 3000 !!!");
