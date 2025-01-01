@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 const LandingPage = ({currentUser , allTickets}) => {
   console.log("the current user is : " , currentUser);
   console.log("the tickets are  " , allTickets)
