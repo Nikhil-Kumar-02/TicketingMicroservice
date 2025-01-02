@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import useRequest from "../../hooks/use-Request";
+import Router from 'next/router';
 
 const stripePromise = loadStripe('pk_test_51QbMpQFQk2WQ8stl6VBbqLx5pvU9Ji1QCT1Ia5iSfOhTnZz42MIeFxrRje8L8v28uwDlmjiioAktE2JNhIjtrYsK009l15qhtK');
 
 const OrderShow = ({ order }) => {
   const [timeLeft, setTimeLeft] = useState(90);
 
-  const [ makeRequest , errors ] = useRequest("post",'/api/payments',{orderId: order.id},(payment)=>console.log(payment));
+  const [ makeRequest , errors ] = useRequest("post",'/api/payments',{orderId: order.id},()=>Router.push("/orders"));
 
   useEffect(() => {
     const timer = setTimeout( ()=> {
