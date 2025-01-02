@@ -64,7 +64,7 @@ const TicketShow = ({ticket}) => {
 
           {/* Purchase Button */}
           <div className="text-center">
-            <button onClick={makeRequest} className="btn btn-primary btn-lg">
+            <button onClick={() => makeRequest()} className="btn btn-primary btn-lg">
               Purchase
             </button>
           </div>

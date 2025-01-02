@@ -40,26 +40,34 @@ router.post("/api/payments" ,
       throw new BadRequestError("cannot pay for a cancelled order")
     }
 
-    const response = await stripe.charges.create({
-      currency : 'usd',
-      amount : order.price*100,
-      source : token
-    })
+    console.log("now i am starting to make payment")
 
-    console.log("stripe payment response is : " , response);
-
-    const payment = Payment.build({
-      orderId,
-      stripeId: response.id,
+    // Step 1: Create PaymentIntent with the amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: order.price * 100, // The amount in cents
+      currency: 'usd',
+      payment_method: token, // The token from frontend
+      automatic_payment_methods: { enabled: true }, // Automatically handle payment methods
     });
     
+    
+
+    // console.log("Stripe Payment Intent response:", paymentIntent);
+
+    // Step 2: Store payment details in the database
+    const payment = Payment.build({
+      orderId,
+      stripeId: paymentIntent.id,
+    });
+
     await payment.save();
 
+    // Step 3: Publish payment details via Kafka
     await new PaymentCreatedPublsiher(KafkaManager.getProducer()).publishMessage({
       id: payment.id,
-      orderId : payment.orderId,
-      stripeId:payment.stripeId
-    })
+      orderId: payment.orderId,
+      stripeId: payment.stripeId
+    });
 
     res.status(201).send(payment);
   }
