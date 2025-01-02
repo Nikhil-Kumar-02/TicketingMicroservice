@@ -6,23 +6,17 @@ import useRequest from "../../hooks/use-Request";
 const stripePromise = loadStripe('pk_test_51QbMpQFQk2WQ8stl6VBbqLx5pvU9Ji1QCT1Ia5iSfOhTnZz42MIeFxrRje8L8v28uwDlmjiioAktE2JNhIjtrYsK009l15qhtK');
 
 const OrderShow = ({ order }) => {
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(90);
 
   const [ makeRequest , errors ] = useRequest("post",'/api/payments',{orderId: order.id},(payment)=>console.log(payment));
 
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setTimeLeft((prev) => {
-  //       if (prev <= 1) {
-  //         clearInterval(timer);
-  //         return 0;
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000);
+  useEffect(() => {
+    const timer = setTimeout( ()=> {
+      setTimeLeft(0);
+    } , 90000)
 
-  //   return () => clearInterval(timer);
-  // }, []);
+    return () => clearTimeout(timer)
+  } , [])
 
   const CheckoutForm = () => {
     const stripe = useStripe();

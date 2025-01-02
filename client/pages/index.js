@@ -7,16 +7,22 @@ const LandingPage = ({currentUser , allTickets}) => {
       <td style={{ padding: "10px" }}>{ticket.title}</td>
       <td style={{ padding: "10px" }}>₹{ticket.price.toFixed(2)}</td>
       <td style={{ padding: "10px" }}>
-        <a
-          href={`/tickets/${ticket.id}`}
-          style={{
-            color: "#007bff",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          View
-        </a>
+        {
+          ticket.orderId ? (
+            <b>Reserved for now</b>
+          ) : (
+            <a
+              href={`/tickets/${ticket.id}`}
+              style={{
+                color: "#007bff",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              View
+            </a>
+          )
+        }
       </td>
     </tr>
   ))
